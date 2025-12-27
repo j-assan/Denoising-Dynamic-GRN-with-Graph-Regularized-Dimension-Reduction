@@ -13,7 +13,7 @@ cd arboreto
 python setup.py install
 ``` 
 
-## Structure
+## Manual
 There are 4 folders
 - `src` contains the code for running GrapCP and GraphPCA
 - one folder for each of the experiments described in the main text
