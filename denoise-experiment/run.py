@@ -7,14 +7,14 @@
 # It's also useful to call this script beforehand with '--get-num-exp', to obtain the number of array jobs that will be submitted, and not entering it manually.
 
 import os
-import sys; sys.path += ['./src']; sys.path += ['../denoise-experiment']
+import sys; sys.path += ['../src']
 import math
 import json
 import matplotlib.pyplot as plt
 import time
 import numpy as np
 
-from src.parse import argparser
+from parse import argparser
 from sweetsweep import parameter_sweep_parallel, parameter_sweep, get_num_exp
 from experiment import experiment
 from sweepdict import files

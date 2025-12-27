@@ -316,7 +316,16 @@ def cp_als(  # noqa: PLR0912,PLR0913,PLR0915
     return M, init, output
 
 
-
+def generate_laplacian(T, gamma=0):
+    K = np.zeros((T, T))
+    for t in range(T):
+        for s in range(max(0, t-2), min(T, t+3)):
+            if s != t:
+                K[t, s] = np.exp(-gamma*(t-s)**2)
+    D = np.diag(K.sum(axis=1))
+    Lapmat = D - K
+    return Lapmat
+    
 
 if __name__ == "__main__":
     import doctest  # pragma: no cover

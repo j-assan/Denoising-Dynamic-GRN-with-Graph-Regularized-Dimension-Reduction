@@ -14,7 +14,7 @@ from pickle import dump
 
 # Inital setting for plot size
 rcParams["figure.figsize"] = (10,8)
-from GraphCP import cp_als
+from GraphCP import cp_als, generate_laplacian
 from GraphPCA import GraphPCA, construct_filtering_matrix
 
 
@@ -151,7 +151,7 @@ def graphpca_experiment(Xten, Lapmat, reg_lam, proj_dim, normXstar, Xstar, exp_d
 
 def experiment(args, exp_dir, seed=None):
     """
-    Main function to run the 'denoise experiment'
+    Main function to run the 'denoise experiment', creates Xstar, the decomposition and saves the results
     """
 
     rngs = np.random.default_rng(seed).spawn(5)
@@ -248,17 +248,6 @@ def experiment(args, exp_dir, seed=None):
     return  results
 
 #%%
-
-# m, n, p = (100, 2, 2)
-def generate_laplacian(T, gamma=0):
-    K = np.zeros((T, T))
-    for t in range(T):
-        for s in range(max(0, t-2), min(T, t+3)):
-            if s != t:
-                K[t, s] = np.exp(-gamma*(t-s)**2)
-    D = np.diag(K.sum(axis=1))
-    Lapmat = D - K
-    return Lapmat
 
 
 

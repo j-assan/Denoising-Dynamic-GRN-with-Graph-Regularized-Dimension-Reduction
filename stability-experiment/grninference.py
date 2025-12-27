@@ -16,7 +16,7 @@ from joblib import Parallel, delayed
 from dask_jobqueue.slurm import SLURMCluster
 from dask.distributed import Client
 cluster = SLURMCluster(cores=1, memory='1GB',
-                        job_extra_directives=[f'--mem-per-cpu=512MB', '--time=03:00:00', '--output=/cluster/scratch/jassan/planarian/out/dask_%j.out'],
+                        job_extra_directives=[f'--mem-per-cpu=512MB', '--time=03:00:00', '--output=./dask_%j.out'],
                         job_directives_skip=['--mem'])
 cluster.scale(25)
 
@@ -37,6 +37,15 @@ lengths = np.sort(list(set(adata.obs["Lengthmm"].tolist())))
 
 
 def worker(task_id,i, frac=None, bin_len=False, seed=None):
+    """
+    task_id: id of job if run in parallel
+    i:  i-th worm
+    frac: fraction of cells that should be used
+    bin_len: 
+            False if only cells from worm i should be used
+            True if cells of other worms close in length should be used
+    """
+    
     client = Client(cluster)
     print(f"Task {task_id} started")
     if bin_len:
@@ -53,7 +62,7 @@ def worker(task_id,i, frac=None, bin_len=False, seed=None):
     # local_cluster = LocalCluster()
     # custom_client = Client(local_cluster)  
     adj_matrix = grnboost2(df, tf_names=TF_names, seed=seed, client_or_address=client, verbose=False)
-    out_file = '/cluster/scratch/jassan/planarian/results/GRNs/neoblast-epidermal-bin-frac20/'+'network_'+str(lengths[i].round(3))+'.csv'
+    out_file = './network_'+str(lengths[i].round(3))+'.csv'
     print(out_file)
     adj_matrix.to_csv(out_file, sep='\t')#, index=False, header=False)
     client.close()

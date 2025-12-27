@@ -1,13 +1,11 @@
-import sys; sys.path += ['/cluster/home/jassan/projects/Beeline']
+import sys; sys.path += ['../src']
 import pandas as pd
 import numpy as np
 import pyttb as ttb
 import scanpy as sc
 import os
 import pickle
-from experiment import generate_laplacian
-from cp_als import cp_als
-# from BLEval.computeJaccard import computePairwiseJaccard
+from GraphCP import cp_als, generate_laplacian
 
 def computePairwiseJacc(inDict):
     """
@@ -40,11 +38,11 @@ INPUT_PATH = "/cluster/scratch/jassan/planarian/"
 # adata = sc.read_h5ad(os.path.join(INPUT_PATH,"planarians-timecourse.h5ad"))
 # lengths = np.sort(list(set(adata.obs["Lengthmm"].tolist())))
 # np.savetxt(os.path.join(INPUT_PATH, 'lenghts'), lengths)
-def jacc():
+def jacc(mode = 'bin'):
     k = 300
     lengths = np.loadtxt(os.path.join(INPUT_PATH, 'lengths.txt'))
     jacc = np.zeros((len(lengths), 5, 5))
-    mode = 'bin'
+    
     for i, l in enumerate(lengths):
         sets = {}
         fname = os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-{mode}/network_{l.round(3)}.csv')
@@ -64,7 +62,7 @@ def jacc():
     np.savetxt(os.path.join(INPUT_PATH, f'{mode}_jacc.txt'), jacc.mean(axis=0))
 
 
-def denoise(i, mode='bin', seed=297192305631970044400581332683131391363):
+def denoiseCP(i, mode='bin', seed=297192305631970044400581332683131391363):
     fracs = ['', '-frac80', '-frac60', '-frac40', '-frac20']
     frac = fracs[i]
     seeds = np.random.SeedSequence(seed).spawn(10)
@@ -95,11 +93,12 @@ def denoise(i, mode='bin', seed=297192305631970044400581332683131391363):
     T = len(lengths)
     matrices = np.zeros((T, len(TF_names), len(genes_to_use)))
 
+    OUT_PATH = './'
     for i in range(T):
         print(i)
 
-        out_file = os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-{mode}{frac}/network_{lengths[i].round(3)}.csv')
-        network = pd.read_csv(out_file, sep='\t')
+        in_file = os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-{mode}{frac}/network_{lengths[i].round(3)}.csv')
+        network = pd.read_csv(in_file, sep='\t')
 
         # Filter for TFs and targets we care about
         network = network[network['TF'].isin(TF_names) & network['target'].isin(genes_to_use)]
@@ -116,14 +115,14 @@ def denoise(i, mode='bin', seed=297192305631970044400581332683131391363):
     Xten = ttb.tensor(matrices)
     Lmat = generate_laplacian(T, 1.0)
     M, res, output = cp_als(Xten, Lmat, reg_lam=0.1, rank=round(2*len(TF_names)), maxiters=1000, seed=seed)
-    with open(f'/cluster/scratch/jassan/planarian/cp{mode}{frac}.pkl', 'wb') as file:
+    with open(os.path.join(OUT_PATH, f'/cluster/scratch/jassan/planarian/cp{mode}{frac}.pkl'), 'wb') as file:
         pickle.dump({'M': M, 'res': res, 'output': output}, file)
     Xhat = M.double()
 
-    if not os.path.exists(os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}')):
-        os.mkdir(os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}'))
+    if not os.path.exists(os.path.join(OUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}')):
+        os.mkdir(os.path.join(OUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}'))
     for i, l in enumerate(lengths):
-        out_file = os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}/network_{l.round(3)}.csv')
+        out_file = os.path.join(OUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}/network_{l.round(3)}.csv')
         multi_index = pd.MultiIndex.from_product([TF_names, genes_to_use], names=['TF', 'target'])
         network = pd.DataFrame(index=multi_index)
         for tf in TF_names:
@@ -184,7 +183,6 @@ def denoisePCA(i, mode='bin'):
     with open(f'/cluster/scratch/jassan/planarian/cp{mode}{frac}.pkl', 'wb') as file:
         pickle.dump({'M': M, 'res': res, 'output': output}, file)
     Xhat = M.double()
-
     if not os.path.exists(os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}')):
         os.mkdir(os.path.join(INPUT_PATH, f'results/GRNs/neoblast-epidermal-cp-{mode}{frac}'))
     for i, l in enumerate(lengths):
@@ -240,5 +238,5 @@ def from_pickle():
         network = network.sort_values('importance', ascending=False)
         network.to_csv(out_file, index = False, sep = '\t')
 # i = int(sys.argv[1])
-# denoise(i)
-jacc()
+denoise_cp(0)
+# jacc()

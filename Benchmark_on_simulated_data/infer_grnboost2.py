@@ -20,16 +20,11 @@ cluster = SLURMCluster(
 )
 
 client = Client(cluster)
-# seed = 282687200569470771573722947675378760940 # for max
-# seed = 252116985052517366521215423717352012263 # for avg
-# seed = 117612549922011834707575521903248636130 # for denoise
-# seed = 130618266573576803824571963652002962995 # for denoise1000
-# seed = 114571913703133810183335840278885049174 # for denoise500
-# seed = 164581622617734100467744384755360816401 # for denoise_bin500
-# seed = 281770256205476037251097559086803755564 # for denoise_bin
-# seed = 29407188230625394854980811797713624466 # for denoise_bin1000
-# seed = 232031585474786604728396572878153641299 # for denoise t20 bin100
-seed = 99461213116388222668100160972571492492 # for denoise t20 bin500
+
+# seed = 281770256205476037251097559086803755564 # for denoise_bin 100 cells
+# seed = 29407188230625394854980811797713624466 # for denoise_bin1000 cells
+# seed = 232031585474786604728396572878153641299 # for denoise t20 bin100 cells
+seed = 99461213116388222668100160972571492492 # for denoise t20 bin500 cells
 seeds = np.random.SeedSequence(seed).spawn(9)
 # Number of runs
 N = 10
@@ -73,16 +68,16 @@ def run_experiment(network_dir: str, seed=None):
 
 
 # # Inference for Cycle
-# run_experiment('CN5', seed=seeds[0])
+run_experiment('CN5', seed=seeds[0])
 
-# # Inference for Trifurcation
-# run_experiment('FN8', seed=seeds[1])
+# Inference for Trifurcation
+run_experiment('FN8', seed=seeds[1])
 
 # Inference for Network4
 run_experiment('FN4', seed=seeds[2])
 
 # Inference for Bifurcation
-# run_experiment('BN8', seed=seeds[3])
+run_experiment('BN8', seed=seeds[3])
 
 # Inference for tree-like networks
 for i, n in enumerate([5, 10, 20,50,100]):

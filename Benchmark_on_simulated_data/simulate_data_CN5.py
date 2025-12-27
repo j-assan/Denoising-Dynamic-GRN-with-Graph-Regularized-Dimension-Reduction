@@ -43,7 +43,7 @@ def run(r, seed):
 
     # Save true network topology
     inter = 1 * (abs(model.inter) > 0)
-    path = '/cluster/scratch/jassan/cardamom/'
+    path = './test/'
     np.save(path + f'CN5/True/inter_t20_{r+1}', inter)
 
     # Generate data
@@ -53,13 +53,14 @@ def run(r, seed):
         data[k+1,2:] = np.random.poisson(sim.m[-1])
 
     # Save data for use with PIDC
-    path = '/cluster/scratch/jassan/cardamom/'
     fname = path + f'CN5/Data/data_t20_{r+1}.txt'
     np.savetxt(fname, data.T, fmt='%d', delimiter='\t')
 
 N = int(sys.argv[1])
 r = int(sys.argv[2])
-seed_seq = np.random.SeedSequence(161594642847959225448853506289995746217) # 203618972760058237638586694585636102273)
+# seed for the simulation with 20 time points:
+seed_seq = np.random.SeedSequence(161594642847959225448853506289995746217)
+ # seed for the simulation with 1000 cells per time point: 203618972760058237638586694585636102273)
 seeds = seed_seq.spawn(N)
 seed = seeds[r].generate_state(5)
 run(r, seed)

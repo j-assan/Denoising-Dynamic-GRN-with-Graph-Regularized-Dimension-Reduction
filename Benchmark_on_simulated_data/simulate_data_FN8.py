@@ -70,7 +70,9 @@ def run(r, seed):
 
 N = int(sys.argv[1])
 r = int(sys.argv[2])
-seed_seq = np.random.SeedSequence(110547844434648552605459073395773322289) # for 1000t20 # 54399050814365466361179279051255698430) # for 1000
+# seed for the simulation with 20 time points:
+seed_seq = np.random.SeedSequence(110547844434648552605459073395773322289) 
+ # seed for the simulation with 1000 cells per time point: 54399050814365466361179279051255698430) # for 1000
 seeds = seed_seq.spawn(N)
 seed = seeds[r].generate_state(5)
 run(r, seed)
