@@ -18,7 +18,7 @@ There are 4 folders
 - `src` contains the code for running GrapCP and GraphPCA
 - one folder for each of the experiments described in the main text
 
-###
+### Benchmark experiment
 The scripts `simulate_data_network.py` are used to simulate the data with 1000 cells per time point and with 20 time points. For 100 cells per time point and 10 time points, the original data by Ventre et al. (2023) are used.
 
 The file `infer_grnboost2_all.py` is used to infer GRNs using cells from all time points. The file `infer_grnboost2.py` is used to infer GRNs using cells from each time point plus the two adjacent time points.
