@@ -14,7 +14,7 @@ from pickle import dump
 
 # Inital setting for plot size
 rcParams["figure.figsize"] = (10,8)
-from cp_als import cp_als
+from GraphCP import cp_als
 from GraphPCA import GraphPCA, construct_filtering_matrix
 
 
