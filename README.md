@@ -5,8 +5,9 @@
 2. create virtual environment `python -m venv venv`
 3. activate virtual environment `source venv/bin/activate`
 4. update pip `pip install --upgrade pip`
-5. install requirements `pip install -r requirements.txt`
-if there are troubles with arboreto (GRNboost2) and dask, install the github version of arboreto:
+5. install requirements `pip install -r requirements.txt`.
+
+If there are problems with arboreto (GRNboost2) and dask, install the github version of arboreto:
 ```pip uninstall arboreto
 git clone https://github.com/aertslab/arboreto.git
 cd arboreto
