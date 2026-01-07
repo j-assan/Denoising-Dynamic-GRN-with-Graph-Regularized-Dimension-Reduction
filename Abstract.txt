@@ -1,0 +1,17 @@
+Title
+Denoising Dynamic Gene Regulatory Networks with Graph Regularized Dimension Reduction
+
+Abstract
+Modeling the complexity of gene regulation and expression proves challenging due to the
+complexity and diversity of contexts and mechanisms. We suggest that for some gene reg-
+ulatory processes, it might be more adequate to infer different causal graphs for different
+time points instead of the static approach of current GRN inference models. To implement
+this idea, we employ principle component analysis (PCA) and canonical polyadic (CP) de-
+composition schemes combined with graph regularization to inform adjacent time points.
+Our approach allows capturing changes over time while still incorporating knowledge from
+neighbouring time points, that are assumed to be similar. Our work comprises the follow-
+ing experiments: Firstly, comparing PCA and CP with graph regularization on a simple
+denoising task. Secondly, testing it on simulated data from different synthetic regulatory
+networks. Thirdly, performing a stability analysis, with respect to the number of cells
+used for inference, on a real-world data set. While we conclude that further evaluation of
+our approach is needed, we believe that we have established a promising starting point.
